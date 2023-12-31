@@ -9,3 +9,104 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  password String
+	created_at DateTime @default(now())
+	updated_at DateTime @updatedAt
+
+	Adresses Address[]
+
+	orders Order?
+
+  @@map("users")
+}
+
+model Address {
+  id String @id @default(uuid())
+	name String
+  zipCode String
+	state String
+	district String
+  street String
+	number Int
+	complement String?
+	created_at DateTime @default(now())
+	updated_at DateTime @updatedAt
+
+	users User @relation(fields: [userId], references: [id])
+	userId String
+
+	orders Order?
+
+  @@map("address")
+}
+
+enum Category {
+	PIZZA
+	SWEET_PIZZA
+	BURGUER
+	DESSERT
+	DRINK
+}
+
+enum isActive {
+	TRUE
+	FALSE
+}
+
+model ItenMenu {
+	id String @id @default(uuid())
+	name String
+	description String
+	category Category
+	price Float
+	isActive isActive @default(TRUE)
+	created_at DateTime @default(now())
+	updated_at DateTime @updatedAt
+
+	ItensOrder ItenOrder[]
+
+	@@map("itens-menu")
+}
+
+model ItenOrder {
+	id String @id @default(uuid())
+	quantity Int
+	price Float
+
+	itensMenu ItenMenu @relation(fields: [idItenMenu], references: [id])
+	idItenMenu String
+
+	orders Order[]
+
+	@@map("itens-order")
+}
+
+enum StatusOrder {
+	WATTING_TO_BE_ACCEPET
+	PREPARED
+	OUT_FOR_DELIVERY
+	CONCLUDED
+}
+
+model Order {
+	id  String @id @default(uuid())
+	total Float
+
+	status StatusOrder @default(WATTING_TO_BE_ACCEPET)
+
+	itensOrders ItenOrder @relation(fields: [idItenOrder], references: [id])
+	idItenOrder String
+
+	user User @relation(fields: [idUser], references: [id])
+	idUser String @unique
+
+	adressesOrder Address? @relation(fields: [idAddress], references: [id])
+	idAddress String @unique
+
+	@@map("orders")
+}

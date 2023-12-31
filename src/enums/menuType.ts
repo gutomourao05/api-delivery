@@ -1,0 +1,7 @@
+export enum MenuType {
+	PIZZA = 'PIZZA',
+	SWEET_PIZZA = 'SWEET_PIZZA',
+	BURGUER = 'BURGUER',
+	DESSERT = 'DESSERT',
+	DRINK = 'DRINK'
+}
