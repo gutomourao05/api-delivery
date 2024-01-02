@@ -34,6 +34,7 @@ model Address {
   street String
 	number Int
 	complement String?
+	isDefault Boolean @default(false)
 	created_at DateTime @default(now())
 	updated_at DateTime @updatedAt
 
@@ -42,7 +43,7 @@ model Address {
 
 	orders Order?
 
-  @@map("address")
+  @@map("adresses")
 }
 
 enum Category {
@@ -53,18 +54,13 @@ enum Category {
 	DRINK
 }
 
-enum isActive {
-	TRUE
-	FALSE
-}
-
 model ItenMenu {
 	id String @id @default(uuid())
 	name String
 	description String
 	category Category
 	price Float
-	isActive isActive @default(TRUE)
+	isActive Boolean @default(true)
 	created_at DateTime @default(now())
 	updated_at DateTime @updatedAt
 
@@ -91,6 +87,7 @@ enum StatusOrder {
 	PREPARED
 	OUT_FOR_DELIVERY
 	CONCLUDED
+	CANCELED
 }
 
 model Order {
@@ -107,6 +104,8 @@ model Order {
 
 	adressesOrder Address? @relation(fields: [idAddress], references: [id])
 	idAddress String @unique
+
+	created_at DateTime @default(now())
 
 	@@map("orders")
 }

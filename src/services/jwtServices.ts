@@ -17,6 +17,7 @@ const signToken = async (data: IJWTDataProps) => {
 };
 
 const verifyToken = async (token: string) => {
+
 	if (!process.env.JWT_SECRET) {
 		return 'JWT_SECRET_NOT_FOUND';
 	}

@@ -4,11 +4,11 @@ import * as yup from 'yup';
 import { passwordCrypt } from '../services/passwordCrypt';
 import { jwtServices } from '../services/jwtServices';
 import { BadRequestError, NotFoundError } from '../helpers/ApiError';
-
+import { IRequestProps } from '../model/IRequestProps';
 
 class UserController {
 
-	async login(request: Request, responde: Response) {
+	async login(request: IRequestProps, responde: Response) {
 
 		const { email, password } = request.body;
 
@@ -34,11 +34,12 @@ class UserController {
 			throw new BadRequestError('Erro ao tentar logar');
 		}
 
-		const { id } = user;
+		const { id, name } = user;
 
 		return responde.status(200).json({
 			success: true,
-			user: { id, token }
+			user: { id, name, email },
+			token
 		});
 	}
 
@@ -47,7 +48,13 @@ class UserController {
 		const schema = yup.object().shape({
 			name: yup.string().required('Necessário preencher o campo nome'),
 			email: yup.string().required('Necessário preencher o campo email').email('Email não é valido'),
-			password: yup.string().required('Necessário preencher o campo senha').min(6, 'Senha deve ter no minimo 6 caracteres')
+			password: yup.string().required('Necessário preencher o campo senha').min(6, 'Senha deve ter no minimo 6 caracteres'),
+			nameEndereco: yup.string().required('Necessário preencher o campo nome'),
+			zipCode: yup.string().required('Necessário preencher o campo Cep'),
+			state: yup.string().required('Necessário preencher o campo estado'),
+			district: yup.string().required('Necessário preencher o campo bairro'),
+			street: yup.string().required('Necessário preencher o campo rua'),
+			number: yup.number().required('Necessário preencher o campo numero'),
 		});
 
 		try {
@@ -56,7 +63,7 @@ class UserController {
 			throw new BadRequestError(error.errors);
 		}
 
-		const { name, email, password } = request.body;
+		const { name, email, password, nameEndereco, zipCode, state, district, street, number } = request.body;
 
 		const existUser = await prismaClient.user.findFirst({
 			where: {
@@ -70,7 +77,7 @@ class UserController {
 
 		const hash = await passwordCrypt.createHash(password);
 
-		if(!hash){
+		if (!hash) {
 			throw new BadRequestError('erro ao criar a senha');
 		}
 
@@ -78,11 +85,22 @@ class UserController {
 			data: {
 				name,
 				email,
-				password: hash
+				password: hash,
+				Adresses: {
+					create: {
+						name: nameEndereco,
+						zipCode,
+						state,
+						district,
+						street,
+						number,
+						isDefault: true
+					}
+				}
 			}
 		});
 
-		if(!user){
+		if (!user) {
 			throw new BadRequestError('Erro ao cruar usuario');
 		}
 

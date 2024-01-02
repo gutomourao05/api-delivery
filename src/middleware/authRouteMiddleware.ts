@@ -1,8 +1,10 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { jwtServices } from '../services/jwtServices';
 import { UnauthorizedError } from '../helpers/ApiError';
+import { IRequestProps } from '../model/IRequestProps';
+import { prismaClient } from '../database/prismaClient';
 
-const validRouteMiddleware = async (request: Request, response: Response, next: NextFunction) => {
+const authRouteMiddleware = async (request: IRequestProps, response: Response, next: NextFunction) => {
 	const { authorization } = request.headers;
 
 	if (!authorization) {
@@ -20,13 +22,23 @@ const validRouteMiddleware = async (request: Request, response: Response, next: 
 	}
 
 	const token = arrayToken[1];
+	request.token = token;
+
 	const verifyToken = await jwtServices.verifyToken(token);
 
 	if(verifyToken === 'JWT_SECRET_NOT_FOUND' || verifyToken === 'JWT_TOKEN_INVALID'){
 		throw new UnauthorizedError('Sem permissão de acesso');
 	}
 
+	request.user = {id: verifyToken.id};
+
+	const user = prismaClient.user.findUnique({where: {id: verifyToken.id}});
+
+	if(!user){
+		throw new UnauthorizedError('Sem Permissão de acesso');
+	}
+
 	return next();
 };
 
-export { validRouteMiddleware };
+export { authRouteMiddleware };
