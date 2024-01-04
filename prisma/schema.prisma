@@ -64,7 +64,8 @@ model ItenMenu {
 	created_at DateTime @default(now())
 	updated_at DateTime @updatedAt
 
-	ItensOrder ItenOrder[]
+	ItensOrder ItenOrder @relation(fields: [idItemOrder], references: [id])
+	idItemOrder String
 
 	@@map("itens-menu")
 }
@@ -74,8 +75,7 @@ model ItenOrder {
 	quantity Int
 	price Float
 
-	itensMenu ItenMenu @relation(fields: [idItenMenu], references: [id])
-	idItenMenu String
+	idItenMenu ItenMenu[]
 
 	orders Order[]
 

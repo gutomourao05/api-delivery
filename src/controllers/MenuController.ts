@@ -39,10 +39,10 @@ class MenuController {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	async list(_request: Request, response: Response){
+	async list(_request: Request, response: Response) {
 		const listMenu = await prismaClient.itenMenu.findMany();
 
-		if(!listMenu){
+		if (!listMenu) {
 			throw new BadRequestError('Erro ao listar menu');
 		}
 
