@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
-import { BadRequestError } from '../helpers/ApiError';
+import { BadRequestError, NotFoundError } from '../helpers/ApiError';
 import { IRequestProps } from '../model/IRequestProps';
 import * as yup from 'yup';
 
@@ -35,8 +35,8 @@ class AddressController {
 				district,
 				street,
 				number,
-				userId,
-				isDefault
+				isDefault,
+				userId
 			}
 		});
 
@@ -50,7 +50,19 @@ class AddressController {
 		});
 	}
 
-	async listAdressesById(){
+	async listAdressesById(request: IRequestProps, response: Response){
+		const id = request.user.id;
+
+		const adresses = await prismaClient.address.findMany({where: {userId: id}});
+
+		if(!adresses){
+			throw new NotFoundError('Nenhum endereço encontrado');
+		}
+
+		return response.status(200).json({
+			success: true,
+			adresses
+		});
 
 	}
 }
