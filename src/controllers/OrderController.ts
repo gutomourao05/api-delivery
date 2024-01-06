@@ -6,7 +6,7 @@ import { BadRequestError } from '../helpers/ApiError';
 
 class OrderController {
 	async create(request: IRequestProps, response: Response) {
-		const { itensOrder } = request.body;
+		const { itensOrder, idAddress } = request.body;
 		const userId = request.user.id;
 		const orderIten = itensOrder as IOrderItenProps[];
 		let valueTotal = 0;
@@ -16,31 +16,18 @@ class OrderController {
 			valueTotal = valueTotal + calc;
 		});
 
-		const order = await prismaClient.order.create({
-			data: {
-				total: valueTotal,
-				itensOrder: itensOrder,
-				adressesOrder: {
-					connect: {
-						id: '00da88e7-0bc3-42ef-81ce-fc764ef9aecf'
-					}
-				},
-				user: {
-					connect: {
-						id: userId
-					}
-				}
-			}
-		});
+		// const order = await prismaClient.order.create({
+		// 	data: {	}
+		// });
 
-		if(!order){
-			throw new BadRequestError('Erro ao efetuar pedido');
-		}
+		// if(!order){
+		// 	throw new BadRequestError('Erro ao efetuar pedido');
+		// }
 
-		return response.status(201).json({
-			success: true,
-			order
-		});
+		// return response.status(201).json({
+		// 	success: true,
+		// 	order
+		// });
 
 	}
 }

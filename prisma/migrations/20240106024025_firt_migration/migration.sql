@@ -40,17 +40,6 @@ CREATE TABLE `itens-menu` (
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
-    `idItemOrder` VARCHAR(191) NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `itens-order` (
-    `id` VARCHAR(191) NOT NULL,
-    `quantity` INTEGER NOT NULL,
-    `price` DOUBLE NOT NULL,
-    `idOrder` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -60,26 +49,11 @@ CREATE TABLE `orders` (
     `id` VARCHAR(191) NOT NULL,
     `total` DOUBLE NOT NULL,
     `status` ENUM('WATTING_TO_BE_ACCEPET', 'PREPARED', 'OUT_FOR_DELIVERY', 'CONCLUDED', 'CANCELED') NOT NULL DEFAULT 'WATTING_TO_BE_ACCEPET',
-    `idUser` VARCHAR(191) NOT NULL,
-    `idAddress` VARCHAR(191) NOT NULL,
+    `itensOrder` JSON NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `orders_idUser_key`(`idUser`),
-    UNIQUE INDEX `orders_idAddress_key`(`idAddress`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
 ALTER TABLE `adresses` ADD CONSTRAINT `adresses_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `itens-menu` ADD CONSTRAINT `itens-menu_idItemOrder_fkey` FOREIGN KEY (`idItemOrder`) REFERENCES `itens-order`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `itens-order` ADD CONSTRAINT `itens-order_idOrder_fkey` FOREIGN KEY (`idOrder`) REFERENCES `orders`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `orders` ADD CONSTRAINT `orders_idUser_fkey` FOREIGN KEY (`idUser`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `orders` ADD CONSTRAINT `orders_idAddress_fkey` FOREIGN KEY (`idAddress`) REFERENCES `adresses`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
