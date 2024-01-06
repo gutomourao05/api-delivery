@@ -6,7 +6,7 @@ const addressRouter = Router();
 
 addressRouter.use(authRouteMiddleware);
 addressRouter.post('/address', AddressController.create);
-addressRouter.get('/address', AddressController.listAdressesById);
+addressRouter.get('/address', AddressController.listAdressesByUser);
 
 
 export default addressRouter;

@@ -50,7 +50,7 @@ class AddressController {
 		});
 	}
 
-	async listAdressesById(request: IRequestProps, response: Response){
+	async listAdressesByUser(request: IRequestProps, response: Response){
 		const id = request.user.id;
 
 		const adresses = await prismaClient.address.findMany({where: {userId: id}});

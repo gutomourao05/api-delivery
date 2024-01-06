@@ -20,6 +20,8 @@ model User {
 
 	Adresses Address[]
 
+	orders Order[]
+
   @@map("users")
 }
 
@@ -39,6 +41,8 @@ model Address {
 
 	users User @relation(fields: [userId], references: [id])
 	userId String
+
+	orders Order[]
 
   @@map("adresses")
 }
@@ -79,6 +83,11 @@ model Order {
 	itensOrder Json
 	created_at DateTime @default(now())
 
+	users User @relation(fields: [userId], references: [id])
+	userId String
+
+	adresses Address? @relation(fields: [idAdrresses], references: [id])
+	idAdrresses String
+
 	@@map("orders")
 }
-

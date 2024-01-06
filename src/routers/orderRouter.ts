@@ -6,5 +6,6 @@ const orderRouter = Router();
 
 orderRouter.use(authRouteMiddleware);
 orderRouter.post('/order', OrderController.create);
+orderRouter.get('/order', OrderController.list);
 
 export default orderRouter;
