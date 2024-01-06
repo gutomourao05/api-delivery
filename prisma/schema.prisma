@@ -65,24 +65,9 @@ model ItenMenu {
 	created_at DateTime @default(now())
 	updated_at DateTime @updatedAt
 
-	ItensOrder ItenOrder? @relation(fields: [idItemOrder], references: [id])
-	idItemOrder String?
-
 	@@map("itens-menu")
 }
 
-model ItenOrder {
-	id String @id @default(uuid())
-	quantity Int
-	price Float
-
-	idItenMenu ItenMenu[]
-
-	order Order @relation(fields: [idOrder], references: [id])
-	idOrder String
-
-	@@map("itens-order")
-}
 
 enum StatusOrder {
 	WATTING_TO_BE_ACCEPET
@@ -92,13 +77,14 @@ enum StatusOrder {
 	CANCELED
 }
 
+
 model Order {
-	id  String @id @default(uuid())
+	id  Int @id @default(autoincrement())
 	total Float
 
 	status StatusOrder @default(WATTING_TO_BE_ACCEPET)
 
-	itensOrder ItenOrder[]
+	itensOrder Json
 
 	user User @relation(fields: [idUser], references: [id])
 	idUser String @unique
@@ -110,3 +96,4 @@ model Order {
 
 	@@map("orders")
 }
+
