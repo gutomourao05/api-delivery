@@ -1,18 +1,16 @@
-import { Response } from 'express';
-import { IOrderItenProps } from '../model/IOrderItenProps';
-import { IRequestProps } from '../model/IRequestProps';
+import { Request, Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
 import { BadRequestError, NotFoundError } from '../helpers/ApiError';
+import { IOrderItenProps } from '../Model/IOrderItenProps';
 
 class OrderController {
-	async create(request: IRequestProps, response: Response) {
-		const { itensOrder, idAddress } = request.body;
-		const userId = request.user.id;
+	async create(request: Request, response: Response) {
+		const { itensOrder, idAddress, userId } = request.body;
 		const orderIten = itensOrder as IOrderItenProps[];
 		let valueTotal = 0;
 
 		orderIten?.map((item) => {
-			const calc = item?.quantity * item?.price;
+			const calc = item?.quantity * parseFloat(item?.price);
 			valueTotal = valueTotal + calc;
 		});
 
@@ -44,8 +42,8 @@ class OrderController {
 
 	}
 
-	async list(request: IRequestProps, response: Response){
-		const userId = request.user.id;
+	async list(request: Request, response: Response){
+		const userId = request.params.id;
 
 		const orders = await prismaClient.order.findMany({where: {
 			userId

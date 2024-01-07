@@ -4,6 +4,7 @@ CREATE TABLE `users` (
     `name` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
+    `isAdmin` BOOLEAN NOT NULL DEFAULT false,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -36,10 +37,11 @@ CREATE TABLE `itens-menu` (
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NOT NULL,
     `category` ENUM('PIZZA', 'SWEET_PIZZA', 'BURGUER', 'DESSERT', 'DRINK') NOT NULL,
-    `price` DOUBLE NOT NULL,
+    `price` VARCHAR(191) NOT NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
+    `urlFile` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -47,13 +49,15 @@ CREATE TABLE `itens-menu` (
 -- CreateTable
 CREATE TABLE `orders` (
     `id` VARCHAR(191) NOT NULL,
+    `numberOrder` INTEGER NOT NULL AUTO_INCREMENT,
     `total` DOUBLE NOT NULL,
     `status` ENUM('WATTING_TO_BE_ACCEPET', 'PREPARED', 'OUT_FOR_DELIVERY', 'CONCLUDED', 'CANCELED') NOT NULL DEFAULT 'WATTING_TO_BE_ACCEPET',
     `itensOrder` JSON NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `userId` VARCHAR(191) NOT NULL,
-    `idAdrresses` VARCHAR(191) NOT NULL,
+    `idAddress` VARCHAR(191) NOT NULL,
 
+    UNIQUE INDEX `orders_numberOrder_key`(`numberOrder`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -64,4 +68,4 @@ ALTER TABLE `adresses` ADD CONSTRAINT `adresses_userId_fkey` FOREIGN KEY (`userI
 ALTER TABLE `orders` ADD CONSTRAINT `orders_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `orders` ADD CONSTRAINT `orders_idAdrresses_fkey` FOREIGN KEY (`idAdrresses`) REFERENCES `adresses`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `orders` ADD CONSTRAINT `orders_idAddress_fkey` FOREIGN KEY (`idAddress`) REFERENCES `adresses`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

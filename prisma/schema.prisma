@@ -2,92 +2,94 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+    provider = "mysql"
+    url      = env("DATABASE_URL")
 }
 
 model User {
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-	created_at DateTime @default(now())
-	updated_at DateTime @updatedAt
+    id         String   @id @default(uuid())
+    name       String
+    email      String   @unique
+    password   String
+		isAdmin Boolean @default(false)
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
 
-	Adresses Address[]
+    Adresses Address[]
+    orders   Order[]
 
-	orders Order[]
-
-  @@map("users")
+    @@map("users")
 }
 
 model Address {
-  id String @id @default(uuid())
-	name String
-  zipCode String
-	state String
-	district String
-  street String
-	number Int
-	complement String?
-	isDefault Boolean @default(false)
-	isActive Boolean @default(true)
-	created_at DateTime @default(now())
-	updated_at DateTime @updatedAt
+    id         String   @id @default(uuid())
+    name       String
+    zipCode    String
+    state      String
+    district   String
+    street     String
+    number     Int
+    complement String?
+    isDefault  Boolean  @default(false)
+    isActive   Boolean  @default(true)
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
 
-	users User @relation(fields: [userId], references: [id])
-	userId String
+    users  User   @relation(fields: [userId], references: [id])
+    userId String
 
-	orders Order[]
+    orders Order[]
 
-  @@map("adresses")
+    @@map("adresses")
 }
 
 enum Category {
-	PIZZA
-	SWEET_PIZZA
-	BURGUER
-	DESSERT
-	DRINK
+    PIZZA
+    SWEET_PIZZA
+    BURGUER
+    DESSERT
+    DRINK
 }
 
 model ItenMenu {
-	id String @id @default(uuid())
-	name String
-	description String
-	category Category
-	price Float
-	isActive Boolean @default(true)
-	created_at DateTime @default(now())
-	updated_at DateTime @updatedAt
+    id          String   @id @default(uuid())
+    name        String
+    description String
+    category    Category
+    price       String
+    isActive    Boolean  @default(true)
+    created_at  DateTime @default(now())
+    updated_at  DateTime @updatedAt
+    urlFile     String
 
-	@@map("itens-menu")
+    @@map("itens-menu")
 }
 
 enum StatusOrder {
-	WATTING_TO_BE_ACCEPET
-	PREPARED
-	OUT_FOR_DELIVERY
-	CONCLUDED
-	CANCELED
+    WATTING_TO_BE_ACCEPET
+    PREPARED
+    OUT_FOR_DELIVERY
+    CONCLUDED
+    CANCELED
 }
 
 model Order {
-	id  String @id @default(uuid())
-	total Float
-	status StatusOrder @default(WATTING_TO_BE_ACCEPET)
-	itensOrder Json
-	created_at DateTime @default(now())
+    id          String      @id @default(uuid())
+    numberOrder Int         @unique @default(autoincrement())
+    total       Float
+    status      StatusOrder @default(WATTING_TO_BE_ACCEPET)
+    itensOrder  Json
+    created_at  DateTime    @default(now())
 
-	users User @relation(fields: [userId], references: [id])
-	userId String
+    users  User   @relation(fields: [userId], references: [id])
+    userId String
 
-	adresses Address? @relation(fields: [idAdrresses], references: [id])
-	idAdrresses String
+    adresses  Address? @relation(fields: [idAddress], references: [id])
+    idAddress String
 
-	@@map("orders")
+    @@map("orders")
 }

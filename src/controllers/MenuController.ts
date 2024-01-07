@@ -3,6 +3,7 @@ import { prismaClient } from '../database/prismaClient';
 import { BadRequestError } from '../helpers/ApiError';
 import * as yup from 'yup';
 import { MenuType } from '../enums/menuType';
+import path from 'path';
 
 class MenuController {
 	async create(request: Request, response: Response) {
@@ -21,10 +22,11 @@ class MenuController {
 		}
 
 		const { name, description, category, price } = request.body;
+		const urlFile = process.env.HOST + path.join('uploads', request.file.filename);
 
 		const menu = await prismaClient.itenMenu.create({
 			data: {
-				name, description, category, price
+				name, description, category, price, urlFile
 			}
 		});
 

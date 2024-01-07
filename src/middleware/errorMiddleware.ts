@@ -4,8 +4,6 @@ import { ApiError } from '../helpers/ApiError';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorMiddleware = (error: ErrorRequestHandler & Partial<ApiError>, request: Request, response: Response, _next: NextFunction) => {
 
-	console.error('__DEV__',error);
-
 	const statusCode = error.statusCode ? error.statusCode : 500;
 	const message = error.statusCode ? error.message : 'Internal Server Error';
 
