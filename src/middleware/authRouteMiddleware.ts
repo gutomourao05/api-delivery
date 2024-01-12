@@ -12,15 +12,15 @@ const authRouteMiddleware = async (request: Request, response: Response, next: N
 
 	const arrayToken = authorization.split(' ');
 
-	if (arrayToken[0] !== 'Bearer') {
+	const [bearer, token] = arrayToken;
+
+	if (bearer !== 'Bearer') {
 		throw new UnauthorizedError('Sem permissão de acesso');
 	}
 
-	if(!arrayToken[1]){
+	if(!token){
 		throw new UnauthorizedError('Sem permissão de acesso');
 	}
-
-	const token = arrayToken[1];
 
 	const verifyToken = await jwtServices.verifyToken(token);
 
