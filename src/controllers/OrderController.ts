@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
 import { BadRequestError, NotFoundError } from '../helpers/ApiError';
-import { IOrderItenProps } from '../Model/IOrderItenProps';
+import { IOrderItenProps } from '../model/IOrderItenProps';
 
 class OrderController {
 	async create(request: Request, response: Response) {
