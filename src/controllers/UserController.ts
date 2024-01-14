@@ -3,10 +3,11 @@ import { prismaClient } from '../database/prismaClient';
 import * as yup from 'yup';
 import { passwordCrypt } from '../services/passwordCrypt';
 import { BadRequestError } from '../helpers/ApiError';
+import { User } from '@prisma/client';
 
 class UserController {
 
-	async create(request: Request, response: Response) {
+	async create(request: Request, response: Response): Promise<Response<User>> {
 
 		const schema = yup.object().shape({
 			name: yup.string().required('Necessário preencher o campo nome'),

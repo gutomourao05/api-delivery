@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import { prismaClient } from '../database/prismaClient';
 import { BadRequestError, NotFoundError } from '../helpers/ApiError';
 import { jwtServices } from '../services/jwtServices';
@@ -5,7 +6,7 @@ import { passwordCrypt } from '../services/passwordCrypt';
 import { Response, Request } from 'express';
 
 class AuthController {
-	async login(request: Request, responde: Response) {
+	async login(request: Request, responde: Response): Promise<Response<User>> {
 
 		const { email, password } = request.body;
 

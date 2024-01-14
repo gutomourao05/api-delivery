@@ -2,9 +2,10 @@ import { Request, Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
 import { BadRequestError, NotFoundError } from '../helpers/ApiError';
 import { IOrderItenProps } from '../model/IOrderItenProps';
+import { Order } from '@prisma/client';
 
 class OrderController {
-	async create(request: Request, response: Response) {
+	async create(request: Request, response: Response): Promise<Response<Order>> {
 		const { itensOrder, idAddress, userId } = request.body;
 		const orderIten = itensOrder as IOrderItenProps[];
 		let valueTotal = 0;
@@ -42,7 +43,7 @@ class OrderController {
 
 	}
 
-	async list(request: Request, response: Response){
+	async list(request: Request, response: Response): Promise<Response<Order[]>>{
 		const userId = request.params.id;
 
 		const orders = await prismaClient.order.findMany({where: {

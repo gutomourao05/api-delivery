@@ -4,9 +4,10 @@ import { BadRequestError } from '../helpers/ApiError';
 import * as yup from 'yup';
 import { MenuType } from '../enums/menuType';
 import path from 'path';
+import { ItenMenu } from '@prisma/client';
 
 class MenuController {
-	async create(request: Request, response: Response) {
+	async create(request: Request, response: Response): Promise<Response<ItenMenu>> {
 
 		const schema = yup.object().shape({
 			name: yup.string().required('Necessário preencher o campo nome'),
@@ -41,7 +42,7 @@ class MenuController {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	async list(_request: Request, response: Response) {
+	async list(_request: Request, response: Response): Promise<Response<ItenMenu[]>> {
 		const listMenu = await prismaClient.itenMenu.findMany();
 
 		if (!listMenu) {

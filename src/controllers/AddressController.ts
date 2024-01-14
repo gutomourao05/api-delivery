@@ -2,9 +2,10 @@ import { Request, Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
 import { BadRequestError, NotFoundError } from '../helpers/ApiError';
 import * as yup from 'yup';
+import { User } from '@prisma/client';
 
 class AddressController {
-	async create(request: Request, response: Response){
+	async create(request: Request, response: Response): Promise<Response<User>>{
 
 		const schema = yup.object().shape({
 			nameEndereco: yup.string().required('Necessário preencher o campo nome'),
@@ -51,7 +52,7 @@ class AddressController {
 		});
 	}
 
-	async listAdressesByUser(request: Request, response: Response){
+	async listAdressesByUser(request: Request, response: Response): Promise<Response<User[]>>{
 
 		const id = request.params.id;
 
