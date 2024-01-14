@@ -2,45 +2,9 @@ import { Request, Response } from 'express';
 import { prismaClient } from '../database/prismaClient';
 import * as yup from 'yup';
 import { passwordCrypt } from '../services/passwordCrypt';
-import { jwtServices } from '../services/jwtServices';
-import { BadRequestError, NotFoundError } from '../helpers/ApiError';
+import { BadRequestError } from '../helpers/ApiError';
 
 class UserController {
-
-	async login(request: Request, responde: Response) {
-
-		const { email, password } = request.body;
-
-		const user = await prismaClient.user.findUnique({
-			where: {
-				email
-			}
-		});
-
-		if (!user) {
-			throw new NotFoundError('Usuario não encontrado');
-		}
-
-		const comparePassword = await passwordCrypt.verifyPassword(password, user.password);
-
-		if (!comparePassword) {
-			throw new BadRequestError('Senha incorreta');
-		}
-
-		const token = await jwtServices.signToken({ id: user.id });
-
-		if (!token) {
-			throw new BadRequestError('Erro ao tentar logar');
-		}
-
-		const { id, name } = user;
-
-		return responde.status(200).json({
-			success: true,
-			user: { id, name, email },
-			token
-		});
-	}
 
 	async create(request: Request, response: Response) {
 
