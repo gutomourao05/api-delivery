@@ -3,57 +3,76 @@ import { prismaClient } from '../database/prismaClient';
 import { BadRequestError, NotFoundError } from '../helpers/ApiError';
 import { IOrderItenProps } from '../model/IOrderItenProps';
 import { Order } from '@prisma/client';
+import { clientMercadoPago } from '../services/configMercadoPago';
 
 class OrderController {
 	async create(request: Request, response: Response): Promise<Response<Order>> {
 		const { itensOrder, idAddress, userId } = request.body;
 		const orderIten = itensOrder as IOrderItenProps[];
-		let valueTotal = 0;
+		let arrayProducts = [];
 
 		orderIten?.map((item) => {
-			const calc = item?.quantity * parseFloat(item?.price);
-			valueTotal = valueTotal + calc;
+			const product = {
+				title: item.name,
+				picture_url: item.urlFile,
+				unit_price: parseFloat(item.price),
+				quantity: item.quantity,
+			};
+			arrayProducts = [...arrayProducts, product];
 		});
 
-		const order = await prismaClient.order.create({
-			data: {
-				total: valueTotal,
-				itensOrder,
-				users: {
-					connect: {
-						id: userId
-					}
-				},
-				adresses: {
-					connect: {
-						id: idAddress
-					}
+		const paymentClient = await clientMercadoPago.create({
+			body: {
+				items: arrayProducts,
+				statement_descriptor: 'Pizzaria delivery Guto',
+				back_urls: {
+					success: 'http://localhost:3000/',
+					failure: 'http://localhost:3000/'
 				}
-			}
+			},
 		});
 
-		if(!order){
-			throw new BadRequestError('Erro ao efetuar pedido');
-		}
+		// const order = await prismaClient.order.create({
+		// 	data: {
+		// 		total: 100,
+		// 		itensOrder,
+		// 		users: {
+		// 			connect: {
+		// 				id: userId
+		// 			}
+		// 		},
+		// 		adresses: {
+		// 			connect: {
+		// 				id: idAddress
+		// 			}
+		// 		}
+		// 	}
+		// });
+
+		// if (!order) {
+		// 	throw new BadRequestError('Erro ao efetuar pedido');
+		// }
 
 		return response.status(201).json({
 			success: true,
-			order
+			teste: paymentClient
 		});
 
 	}
 
-	async list(request: Request, response: Response): Promise<Response<Order[]>>{
+	async list(request: Request, response: Response): Promise<Response<Order[]>> {
 		const userId = request.params.id;
 
-		const orders = await prismaClient.order.findMany({where: {
-			userId
-		},include: {
-			adresses: true,
-			users: true
-		} });
+		const orders = await prismaClient.order.findMany({
+			where: {
+				userId
+			}, include: {
+				adresses: true,
+				users: true
+			}
+		});
 
-		if(!orders){
+		if (!orders) {
 			throw new NotFoundError('Nenhum pedido encontrado');
 		}
 
