@@ -26,9 +26,11 @@ class OrderController {
 				items: arrayProducts,
 				statement_descriptor: 'Pizzaria delivery Guto',
 				back_urls: {
-					success: 'http://localhost:3000/',
-					failure: 'http://localhost:3000/'
-				}
+					success: 'http://192.168.100.103:3000/success',
+					failure: 'http://192.168.100.103:3000/failure'
+				},
+				auto_return: 'approved',
+				notification_url: 'http://www.updatepro.com.br/payment'
 			},
 		});
 
