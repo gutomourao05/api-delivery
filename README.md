@@ -23,8 +23,6 @@ Uma API RESTful para um serviço de entrega que permite a criação de usuários
 
 ## Tecnologias Utilizadas
 
-Liste as principais tecnologias, linguagens e frameworks utilizados no projeto.
-
 - Node
 - Express
 - Prisma
@@ -47,6 +45,9 @@ cd api-delivery
 ## instale as dependencias
 npm install
 
+## inicie o servidor
+npm dev
+
 # YARN
 ## Clone o repositório
 git clone https://github.com/gutomourao05/api-delivery
@@ -56,3 +57,6 @@ cd api-delivery
 
 ## instale as dependencias
 yarn install
+
+## inicie o servidor
+yarn dev
